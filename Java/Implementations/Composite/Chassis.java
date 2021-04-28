@@ -1,9 +1,9 @@
 import java.util.*;
 
-public class Motherboard extends CompositeComponent {
+public class Chassis extends CompositeComponent {
 	private int ownPrice;
 
-	public Motherboard(String name, int ownPrice) {
+	public Chassis(String name, int ownPrice) {
 		super(name);
 		this.ownPrice = ownPrice;
 	}
@@ -19,7 +19,7 @@ public class Motherboard extends CompositeComponent {
 	}
 
 	public int wattage() {
-		int w = 40;
+		int w = 0;
 		Iterator<Component> itr = this.iterator();
 		while (itr.hasNext()) {
 			Component c = itr.next();
@@ -31,10 +31,11 @@ public class Motherboard extends CompositeComponent {
 	public String display() {
 		StringJoiner sj = Utils.componentStringJoiner();
 		sj.add("Name: " + this.name());
-		sj.add("Own Price: " + this.ownPrice);
+		sj.add("Own price: " + this.ownPrice);
 		sj.add("Total price: " + this.price());
-		sj.add("Components:\n" + Utils.indent(this.displayComponents()));
+		sj.add("Total wattage: " + this.wattage());
+		sj.add("Components:\n" + Utils.indent(Utils.indent(this.displayComponents())));
 
-		return "Motherboard\n" + Utils.indent(sj.toString());
+		return "Chassis\n" + Utils.indent(sj.toString());
 	}
 }

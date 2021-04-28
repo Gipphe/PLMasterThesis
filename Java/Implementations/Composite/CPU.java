@@ -21,9 +21,9 @@ public class CPU extends LeafComponent {
 	public String display() {
 		StringJoiner sj = Utils.componentStringJoiner();
 		sj.add("Name: " + this.name());
-		sj.add("Clock frequency: " + this.clockFreq);
 		sj.add("Price: " + this.price);
 		sj.add("Wattage: " + this.wattage());
+		sj.add("Clock frequency: " + this.clockFreq);
 		return "CPU\n" + Utils.indent(sj.toString());
 	}
 }

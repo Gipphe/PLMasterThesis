@@ -2,9 +2,9 @@ import java.util.*;
 
 public class RAM extends LeafComponent {
 	private int price;
-	private int capacity;
+	private long capacity;
 
-	public RAM(String name, int price, int capacity) {
+	public RAM(String name, int price, long capacity) {
 		super(name);
 		this.price = price;
 		this.capacity = capacity;

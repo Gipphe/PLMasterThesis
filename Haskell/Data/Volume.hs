@@ -1,13 +1,16 @@
 data Volume
-        = UnMuted Int
-        | Muted
+    = UnMuted Int
+    | Muted
 
 instance Semigroup Volume where
     (<>) :: Volume -> Volume -> Volume
     Muted     <> x         = x
-    x         <> Muted     = x
-    UnMuted x <> UnMuted y = UnMuted (x + y)
+    x         <> Muted     = Muted
+    UnMuted x <> UnMuted y = UnMuted (clamp (x + y))
 
 instance Monoid Volume where
     mempty :: Volume
     mempty = Muted
+
+clamp :: Int -> Int
+clamp = max 0 . min 100
