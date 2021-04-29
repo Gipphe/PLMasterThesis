@@ -8,10 +8,10 @@ public class LinkedList<T> extends Collection<T> {
 			return;
 		}
 		Node<T> curr = this.head;
-		while (curr.getNext() != null) {
-			curr = curr.getNext();
+		while (curr.next() != null) {
+			curr = curr.next();
 		}
-		curr.setNext(node);
+		curr.next(node);
 	}
 
 	public Iterator<T> createIterator() {
@@ -26,15 +26,15 @@ public class LinkedList<T> extends Collection<T> {
 			this.value = v;
 		}
 
-		private void setNext(Node<T> next) {
+		private void next(Node<T> next) {
 			this.next = next;
 		}
 
-		private Node<T> getNext() {
+		private Node<T> next() {
 			return this.next;
 		}
 
-		private T getValue() {
+		private T value() {
 			return this.value;
 		}
 	}
@@ -53,7 +53,7 @@ public class LinkedList<T> extends Collection<T> {
 		}
 
 		public T currentItem() {
-			return this.curr.getValue();
+			return this.curr.value();
 		}
 
 		public void next() {

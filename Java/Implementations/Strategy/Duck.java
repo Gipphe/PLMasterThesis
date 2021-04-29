@@ -9,8 +9,9 @@ public class Duck {
 		this.position = new Position(0, 0);
 	}
 
-	public void moveTo(Position dest) {
-		System.out.println(this.name +  " " + this.movement.moveTo(this.position, dest) + ".");
+	public String moveTo(Position dest) {
+		String res = this.name +  " " + this.movement.moveTo(this.position, dest) + ".";
 		this.position = dest;
+		return res;
 	}
 }

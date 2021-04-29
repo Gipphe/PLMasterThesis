@@ -12,11 +12,11 @@ abstract class Fork {
 		this.length = length;
 	}
 
-	public int getNumberOfProngs() {
+	public int numberOfProngs() {
 		return this.numberOfProngs;
 	}
 
-	public int getLength() {
+	public int length() {
 		return this.length;
 	}
 
@@ -36,7 +36,7 @@ abstract class Knife {
 		return this.isDoubleEdged;
 	}
 
-	public int getWeight() {
+	public int weight() {
 		return this.weight;
 	}
 
