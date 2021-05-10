@@ -3,14 +3,11 @@
 
 module StateT
     ( StateT(..)
-    , MonadState(..)
     ) where
 
 import Control.Monad.IO.Class (MonadIO(..))
-
-class Monad m => MonadState m s where
-    get :: m s
-    put :: s -> m ()
+import MonadState (MonadState(..))
+import MonadTrans (MonadTrans(..))
 
 newtype StateT s m a = StateT { runStateT :: s -> m (s, a) }
 
@@ -41,6 +38,13 @@ instance MonadIO m => MonadIO (StateT s m) where
             pure (s, x)
         )
 
-instance (Monad m) => MonadState (StateT s m) s where
+instance (Monad m) => MonadState s (StateT s m) where
     get = StateT (\s -> pure (s, s))
     put s = StateT (\_ -> pure (s, ()))
+
+instance MonadTrans (StateT s) where
+    lift m = StateT
+        (\s -> do
+            v <- m
+            pure (s, v)
+        )

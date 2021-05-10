@@ -1,38 +1,23 @@
-{-# LANGUAGE ExistentialQuantification #-}
-
+import Client (Client(..), eat)
 import Data.List (intercalate)
-import Fork
-    ( Fork(..)
+import Fork (Fork(..), SilverFork(..), SteelFork(..), WoodenFork(..))
+import Knife
+    ( Knife(..)
     , KnifeForkAdapter(..)
-    , SilverFork(..)
-    , SteelFork(..)
-    , WoodenFork(..)
+    , SilverKnife(..)
+    , SteelKnife(..)
+    , WoodenKnife(..)
     )
-import Knife (Knife(..), SilverKnife(..), SteelKnife(..), WoodenKnife(..))
 
 main :: IO ()
 main = putStrLn eatenMeals
   where
-    eatenMeals = intercalate "\n-----\n" (eatMeal <$> meals)
+    eatenMeals = intercalate "\n-----\n" (eatPair <$> meals)
+    eatPair (c, f) = eat c f
     meals =
-        [ MkMeal wf   wk  "beef"
-        , MkMeal waf  stk "salad"
-        , MkMeal stf  sik "sandwich"
-        , MkMeal sif  stk "pizza"
-        , MkMeal siaf wk  "bread"
+        [ (MkClient MkWoodenFork MkWoodenKnife                      , "beef")
+        , (MkClient (MkKnifeForkAdapter MkWoodenKnife) MkSteelKnife , "salad")
+        , (MkClient MkSteelFork MkSilverKnife, "sandwich")
+        , (MkClient MkSilverFork MkSteelKnife                       , "pizza")
+        , (MkClient (MkKnifeForkAdapter MkSilverKnife) MkWoodenKnife, "bread")
         ]
-
-    wk   = MkWoodenKnife
-    sik  = MkSilverKnife
-    stk  = MkSteelKnife
-    wf   = MkWoodenFork
-    sif  = MkSilverFork
-    stf  = MkSteelFork
-    waf  = MkKnifeForkAdapter MkWoodenKnife
-    siaf = MkKnifeForkAdapter MkSilverKnife
-
-data Meal = forall k f . (Fork f, Knife k) => MkMeal f k String
-
-eatMeal :: Meal -> String
-eatMeal m = case m of
-    MkMeal f k food -> cutFood food k <> "\n" <> stabFood food f <> "\nNom"

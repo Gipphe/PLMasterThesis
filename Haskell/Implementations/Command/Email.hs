@@ -11,7 +11,7 @@ data Email = MkEmail
     }
 
 emptyEmail :: Email
-emptyEmail = MkEmail "" "" Nothing
+emptyEmail = MkEmail { subject = "", body = "", signature = Nothing }
 
 addSignature :: String -> Email -> Email
 addSignature s email = email { signature = Just s }

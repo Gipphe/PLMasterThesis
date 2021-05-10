@@ -9,7 +9,7 @@ public class ConsoleMailServer implements MailServer {
 		if (email.signature != null && email.signature.length() != 0) {
 			sj.add("Signature: " + email.signature);
 		}
-		sj.add("\n" + email.body);
+		sj.add("Body: " + email.body);
 		System.out.println(sj);
 	}
 

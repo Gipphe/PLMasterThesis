@@ -3,8 +3,10 @@ module Knife
     , SilverKnife(..)
     , WoodenKnife(..)
     , SteelKnife(..)
+    , KnifeForkAdapter(..)
     ) where
 
+import Fork (Fork(..))
 import Util (sentenceCase)
 
 class Knife knife where
@@ -12,6 +14,7 @@ class Knife knife where
     knifeType :: knife -> String
     sharpness :: knife -> String
     cutFood :: String -> knife -> String
+
 
 data SilverKnife = MkSilverKnife
 
@@ -27,6 +30,7 @@ instance Knife SilverKnife where
             <> sentenceCase (knifeAppearance k)
             <> "."
 
+
 data SteelKnife = MkSteelKnife
 
 instance Knife SteelKnife where
@@ -39,6 +43,7 @@ instance Knife SteelKnife where
             <> " with the steel knife. It cuts the food with ease. It doesn't"
             <> " look spectacular, but it is effective."
 
+
 data WoodenKnife = MkWoodenKnife
 
 instance Knife WoodenKnife where
@@ -50,3 +55,19 @@ instance Knife WoodenKnife where
             <> food
             <> " with the wooden knife. A challenge, to say the least; you're"
             <> " literally trying to eat a meal with a butter knife..."
+
+
+newtype KnifeForkAdapter knife = MkKnifeForkAdapter knife
+
+instance Knife knife => Fork (KnifeForkAdapter knife) where
+    forkAppearance (MkKnifeForkAdapter k) = knifeAppearance k
+    pointiness (MkKnifeForkAdapter k) = "like its sharpness, " <> sharpness k
+    stabFood food (MkKnifeForkAdapter k) =
+        "You stab the "
+            <> food
+            <> " with a "
+            <> knifeType k
+            <> " knife, using it like a single-pronged fork. The knife's"
+            <> " sharpness is "
+            <> sharpness k
+            <> ", which shows in how it handles as a makeshift fork."

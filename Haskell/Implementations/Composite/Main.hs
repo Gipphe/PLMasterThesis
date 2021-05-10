@@ -10,14 +10,10 @@ import Component
     )
 
 main :: IO ()
-main =
-    putStrLn
-        $ displayComponent
-        $ flip addComponent (addCDROM computer)
-        $ addCPU
-        $ addRAM mb
+main = putStrLn $ displayComponent $ addToChassis $ addCPU $ addRAM mb
   where
     computer = mkChassis "Cheap chassis" 350 :: Component []
+    addToChassis x = addComponent x (addCDROM computer)
     mb       = mkMotherboard "Decent motherboard" 1100
     addRAM   = addComponent (mkRAM "Expensive RAM" 1400 4000000000000)
     addCPU   = addComponent (mkCPU "Good CPU" 2000 "3 GHz")

@@ -16,7 +16,9 @@ public class KnifeForkAdapter implements Fork {
 	public String stabFood(String food) {
 		return "You stab the "
 			+ food
-			+ " with a " + this.knife.type() + " knife, using it like a single-pronged fork. The knife's sharpness is "
+			+ " with a "
+			+ this.knife.type()
+			+ " knife, using it like a single-pronged fork. The knife's sharpness is "
 			+ this.knife.sharpness()
 			+ ", which shows in how it handles as a makeshift fork.";
 	}

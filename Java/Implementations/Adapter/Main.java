@@ -1,4 +1,4 @@
-import java.util.StringJoiner;
+import java.util.*;
 
 public class Main {
 	public static void main(String... args) {
@@ -11,37 +11,30 @@ public class Main {
 		Fork waf = new KnifeForkAdapter(new WoodenKnife());
 		Fork siaf = new KnifeForkAdapter(new SilverKnife());
 
-		Meal[] meals = new Meal[] {
-			new Meal(wf, wk, "beef"),
-			new Meal(waf, stk, "salad"),
-			new Meal(stf, sik, "sandwich"),
-			new Meal(sif, stk, "pizza"),
-			new Meal(siaf, wk, "bread")
-		};
+		List<Pair<Client, String>> meals = new ArrayList<>();
+		meals.add(new Pair<>(new Client(wf, wk), "beef"));
+		meals.add(new Pair<>(new Client(waf, stk), "salad"));
+		meals.add(new Pair<>(new Client(stf, sik), "sandwich"));
+		meals.add(new Pair<>(new Client(sif, stk), "pizza"));
+		meals.add(new Pair<>(new Client(siaf, wk), "bread"));
 
 		StringJoiner sj = new StringJoiner("\n-----\n");
 
-		for (Meal meal : meals) {
-			sj.add(eat(meal));
+		for (Pair<Client, String> meal : meals) {
+			Client client = meal.fst;
+			String food = meal.snd;
+			sj.add(client.eat(food));
 		}
 
 		System.out.println(sj);
 	}
-
-	public static String eat(Meal meal) {
-		return meal.knife.cutFood(meal.food)
-			+ "\n" + meal.fork.stabFood(meal.food)
-			+ "\nNom";
-	}
 }
 
-class Meal {
-	public final Fork fork;
-	public final Knife knife;
-	public final String food;
-	public Meal(Fork fork, Knife knife, String food) {
-		this.fork = fork;
-		this.knife = knife;
-		this.food = food;
+class Pair<A, B> {
+	public final A fst;
+	public final B snd;
+	Pair(A a, B b) {
+		this.fst = a;
+		this.snd = b;
 	}
 }

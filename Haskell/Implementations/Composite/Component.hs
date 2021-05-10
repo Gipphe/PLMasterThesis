@@ -5,13 +5,7 @@
 module Component
     ( Component(..)
     , BasicInfo(..)
-    , CDROM(..)
-    , Chassis(..)
-    , CPU(..)
     , ClockFrequency(..)
-    , Motherboard(..)
-    , RAM(..)
-    , Capacity(..)
     , mkChassis
     , mkCPU
     , mkRAM
@@ -27,11 +21,15 @@ module Component
 import Data.Monoid (Sum(..))
 
 data Component t
-    = CDROM CDROM
-    | Chassis Chassis (t (Component t))
-    | CPU CPU
-    | Motherboard Motherboard (t (Component t))
-    | RAM RAM
+    = CDROM BasicInfo
+    | Chassis BasicInfo (t (Component t))
+    | CPU BasicInfo ClockFrequency
+    | Motherboard BasicInfo (t (Component t))
+    | RAM BasicInfo Capacity
+
+newtype ClockFrequency = MkClockFrequency String
+
+newtype Capacity = MkCapacity Int
 
 newtype Price = MkPrice Int
 
@@ -70,35 +68,20 @@ data BasicInfo = MkBasicInfo
     , price :: Price
     }
 
-newtype CDROM = MkCDROM BasicInfo
-
 mkCDROM :: String -> Int -> Component t
-mkCDROM n p = CDROM (MkCDROM (MkBasicInfo n (MkPrice p)))
-
-newtype Chassis = MkChassis BasicInfo
+mkCDROM n p = CDROM (MkBasicInfo n (MkPrice p))
 
 mkChassis :: Monoid (t (Component t)) => String -> Int -> Component t
-mkChassis n p = Chassis (MkChassis (MkBasicInfo n (MkPrice p))) mempty
-
-data CPU = MkCPU BasicInfo ClockFrequency
+mkChassis n p = Chassis (MkBasicInfo n (MkPrice p)) mempty
 
 mkCPU :: String -> Int -> String -> Component t
-mkCPU n p hz = CPU (MkCPU (MkBasicInfo n (MkPrice p)) (MkClockFrequency hz))
-
-newtype ClockFrequency = MkClockFrequency String
-
-newtype Motherboard = MkMotherboard BasicInfo
+mkCPU n p hz = CPU (MkBasicInfo n (MkPrice p)) (MkClockFrequency hz)
 
 mkMotherboard :: Monoid (t (Component t)) => String -> Int -> Component t
-mkMotherboard n p =
-    Motherboard (MkMotherboard (MkBasicInfo n (MkPrice p))) mempty
-
-data RAM = MkRAM BasicInfo Capacity
+mkMotherboard n p = Motherboard (MkBasicInfo n (MkPrice p)) mempty
 
 mkRAM :: String -> Int -> Int -> Component t
-mkRAM n p c = RAM (MkRAM (MkBasicInfo n (MkPrice p)) (MkCapacity c))
-
-newtype Capacity = MkCapacity Int
+mkRAM n p c = RAM (MkBasicInfo n (MkPrice p)) (MkCapacity c)
 
 class Add t a where
     add :: a -> t a -> t a
@@ -108,19 +91,19 @@ instance Add [] a where
 
 componentName :: Component t -> String
 componentName c = case c of
-    CDROM (MkCDROM x)               -> name x
-    CPU   (MkCPU x _)               -> name x
-    RAM   (MkRAM x _)               -> name x
-    Chassis     (MkChassis     x) _ -> name x
-    Motherboard (MkMotherboard x) _ -> name x
+    CDROM x         -> name x
+    CPU         x _ -> name x
+    RAM         x _ -> name x
+    Chassis     x _ -> name x
+    Motherboard x _ -> name x
 
 componentPrice :: Foldable t => Component t -> Price
 componentPrice c = case c of
-    CDROM (MkCDROM x)                   -> price x
-    CPU   (MkCPU x _)                   -> price x
-    RAM   (MkRAM x _)                   -> price x
-    Chassis     (MkChassis     x) comps -> price x + sumComponentPrices comps
-    Motherboard (MkMotherboard x) comps -> price x + sumComponentPrices comps
+    CDROM x             -> price x
+    CPU         x _     -> price x
+    RAM         x _     -> price x
+    Chassis     x comps -> price x + sumComponentPrices comps
+    Motherboard x comps -> price x + sumComponentPrices comps
     where sumComponentPrices = foldMap componentPrice
 
 componentWattage :: Foldable t => Component t -> Wattage
@@ -133,8 +116,8 @@ componentWattage c = case c of
 ownWattage :: Component t -> Wattage
 ownWattage c = case c of
     CDROM _         -> 20
-    CPU   _         -> 140
-    RAM   _         -> 30
+    CPU         _ _ -> 140
+    RAM         _ _ -> 30
     Chassis     _ _ -> 0
     Motherboard _ _ -> 40
 
@@ -146,11 +129,11 @@ addComponent x xs = case xs of
 
 displayComponent :: (Foldable t, Functor t) => Component t -> String
 displayComponent c = case c of
-    CDROM (MkCDROM x) -> "CDROM\n" <> indent
+    CDROM x -> "CDROM\n" <> indent
         (componentStringJoin
             (displayName x : displayPrice c <> displayWattage c)
         )
-    CPU (MkCPU x (MkClockFrequency hz)) -> "CPU\n" <> indent
+    CPU x (MkClockFrequency hz) -> "CPU\n" <> indent
         (componentStringJoin
             (  displayName x
             :  displayPrice c
@@ -158,7 +141,7 @@ displayComponent c = case c of
             <> ["Clock frequency: " <> hz]
             )
         )
-    RAM (MkRAM x (MkCapacity capacity)) -> "RAM\n" <> indent
+    RAM x (MkCapacity capacity) -> "RAM\n" <> indent
         (componentStringJoin
             (  displayName x
             :  displayPrice c
@@ -166,9 +149,8 @@ displayComponent c = case c of
             <> ["Capacity: " <> show capacity <> " B"]
             )
         )
-    Chassis (MkChassis x) comps -> "Chassis\n" <> displayComposite x comps
-    Motherboard (MkMotherboard x) comps ->
-        "Motherboard\n" <> displayComposite x comps
+    Chassis     x comps -> "Chassis\n" <> displayComposite x comps
+    Motherboard x comps -> "Motherboard\n" <> displayComposite x comps
   where
     displayComposite x comps = indent
         (componentStringJoin
@@ -188,17 +170,17 @@ displayName x = "Name: " <> name x
 
 displayPrice :: Foldable t => Component t -> [String]
 displayPrice c = case c of
-    Chassis (MkChassis x) _ ->
+    Chassis x _ ->
         [ "Own price: " <> showPrice (price x)
         , "Total price: " <> showPrice (componentPrice c)
         ]
-    Motherboard (MkMotherboard x) _ ->
+    Motherboard x _ ->
         [ "Own price: " <> showPrice (price x)
         , "Total price: " <> showPrice (componentPrice c)
         ]
-    CDROM (MkCDROM x) -> ["Price: " <> showPrice (price x)]
-    CPU   (MkCPU x _) -> ["Price: " <> showPrice (price x)]
-    RAM   (MkRAM x _) -> ["Price: " <> showPrice (price x)]
+    CDROM x -> ["Price: " <> showPrice (price x)]
+    CPU x _ -> ["Price: " <> showPrice (price x)]
+    RAM x _ -> ["Price: " <> showPrice (price x)]
 
 displayWattage :: Foldable t => Component t -> [String]
 displayWattage c = case c of

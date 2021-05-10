@@ -7,8 +7,10 @@ module Command
 
 import Control.Monad.IO.Class (MonadIO(..))
 import Email (Email)
-import MailServer (MailServer(..))
-import StateT (MonadState(..))
+import MailServer (SendEmail(..), SignEmail(..))
+import MonadEmailEditor (MonadEmailEditor)
+import qualified MonadEmailEditor as Editor
+import MonadState (MonadState(..))
 
 data Command
     = SendEmail String
@@ -16,19 +18,15 @@ data Command
     | UpdateText (String -> Email -> Email) String
     | Macro [Command]
 
-dispatch :: (MailServer ms, MonadState m Email, MonadIO m)
-         => ms
-         -> Command
+dispatch :: (SendEmail m, SignEmail m, MonadEmailEditor m, MonadIO m)
+         => Command
          -> m ()
-dispatch ms c = do
-    email <- get
-    case c of
-        SendEmail recipient -> do
-            liftIO (sendEmail email recipient ms)
-        SignEmail -> do
-            signedEmail <- liftIO (signEmailAsServer email ms)
-            put signedEmail
-        UpdateText updateFn text -> put (updateFn text email)
-        Macro commands           -> do
-            _ <- traverse (dispatch ms) commands
-            pure ()
+dispatch c = case c of
+    SendEmail recipient -> do
+        email <- Editor.create
+        sendEmail email recipient
+    SignEmail                -> signEmailAsServer
+    UpdateText updateFn text -> Editor.mapEmail (updateFn text)
+    Macro commands           -> do
+        _ <- traverse dispatch commands
+        pure ()

@@ -3,3 +3,11 @@
 *.hi
 *.s
 *.class
+time_*.md
+*.jar
+cc.csv
+*.db
+PSLOC.txt
+CC.txt
+*.out
+Out/

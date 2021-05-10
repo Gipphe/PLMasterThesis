@@ -1,0 +1,6 @@
+[submodule "homplexity"]
+	path = homplexity
+	url = https://gitlab.com/migamake/homplexity.git
+[submodule "argon"]
+	path = argon
+	url = https://github.com/rubik/argon.git
