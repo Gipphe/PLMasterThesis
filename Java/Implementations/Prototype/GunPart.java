@@ -1,4 +1,4 @@
-public class GunPart extends Part {
+public class GunPart implements Part {
 	private int power;
 
 	public GunPart(int power) {
@@ -6,10 +6,10 @@ public class GunPart extends Part {
 	}
 
 	public String display() {
-		return "Gun with " + this.power + " power";
+		return "Gun: " + this.power + " power";
 	}
 
-	public Part clone() throws CloneNotSupportedException {
-		return (GunPart) super.clone();
+	public Part clone() {
+		return new GunPart(this.power);
 	}
 }

@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Rectangle implements Display {
 	private int height;
 	private int width;
@@ -8,6 +10,15 @@ public class Rectangle implements Display {
 	}
 
 	public String display() {
-		return "Rectangle of size " + this.width + "x" + this.height;
+		String hor = "-".repeat(this.width);
+		String vert = "|" + " ".repeat(this.width - 2) + "|";
+		StringJoiner sj = new StringJoiner("\n");
+		sj.add(hor);
+		for (int i = 0; i < this.height - 2; i += 1) {
+			sj.add(vert);
+		}
+		sj.add(hor);
+
+		return "Rectangle of size " + this.width + "x" + this.height + "\n" + sj.toString();
 	}
 }

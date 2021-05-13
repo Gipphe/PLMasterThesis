@@ -1,30 +1,41 @@
-import Control.Monad (forM_)
 import Display (Display(..))
 import Gun (Gun(..))
-import SpaceShip (Part(..), SpaceShip, addPart, emptySpaceShip)
+import SpaceShip (addPart, mkSpaceShip)
 import Structure (Structure(..))
 import Thruster (Thruster(..))
 import Window (Window(..))
 
 main :: IO ()
 main = do
-    let tp = Part (MkThruster 30)
-        sp = Part (MkStructure "")
-        wp = Part (MkWindow 50)
-        gp = Part (MkGun 10)
+    putStrLn (display smallSpaceShip <> "\n")
+    putStrLn (display largeSpaceShip)
+  where
+    weakThruster    = MkThruster 30
+    strongThruster  = MkThruster 70
+    normalStructure = MkStructure 100
+    strongStructure = MkStructure 250
+    window          = MkWindow 25
+    weakGun         = MkGun 10
+    strongGun       = MkGun 40
 
-        assembleSpaceShip =
-            applyNTimes 10 (addPart sp)
-                . addPart gp
-                . addPart wp
-                . addPart tp
-                . addPart tp
+    smallSpaceShip =
+        (\s -> foldr addPart s $ replicate 10 normalStructure)
+            . addPart weakGun
+            . addPart weakGun
+            . addPart window
+            . addPart weakThruster
+            . addPart weakThruster
+            $ mkSpaceShip "Foo"
 
-        finalSpaceShip = assembleSpaceShip emptySpaceShip
-
-    putStrLn (display finalSpaceShip)
-
-applyNTimes :: Int -> (a -> a) -> a -> a
-applyNTimes n f x
-    | n <= 0    = x
-    | otherwise = applyNTimes (n - 1) f (f x)
+    largeSpaceShip =
+        (\s -> foldr addPart s $ replicate 20 normalStructure)
+            . (\s -> foldr addPart s $ replicate 5 window)
+            . (\s -> foldr addPart s $ replicate 5 strongStructure)
+            . addPart weakGun
+            . addPart strongGun
+            . addPart strongGun
+            . addPart weakThruster
+            . addPart weakThruster
+            . addPart strongThruster
+            . addPart strongThruster
+            $ mkSpaceShip "Bar"

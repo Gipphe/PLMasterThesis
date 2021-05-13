@@ -1,4 +1,4 @@
-public class ThrusterPart extends Part {
+public class ThrusterPart implements Part {
 	private int thrust;
 
 	public ThrusterPart(int thrust) {
@@ -6,10 +6,10 @@ public class ThrusterPart extends Part {
 	}
 
 	public String display() {
-		return "Thruster with " + this.thrust + " thrust";
+		return "Thruster: " + this.thrust + " thrust";
 	}
 
-	public Part clone() throws CloneNotSupportedException {
-		return (ThrusterPart) super.clone();
+	public Part clone() {
+		return new ThrusterPart(this.thrust);
 	}
 }

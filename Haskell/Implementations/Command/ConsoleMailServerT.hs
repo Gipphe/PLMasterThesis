@@ -8,7 +8,6 @@ import Email (Email(..))
 import MailServer (SendEmail(..), SignEmail(..))
 import MonadEmailEditor (MonadEmailEditor)
 import qualified MonadEmailEditor as Editor
-import MonadState (MonadState, modify)
 import MonadTrans (MonadTrans(..))
 
 newtype ConsoleMailServerT m a = ConsoleMailServerT

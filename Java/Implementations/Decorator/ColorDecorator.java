@@ -1,12 +1,12 @@
 public class ColorDecorator extends DisplayDecorator {
-	private String color;
+	private Color color;
 
-	public ColorDecorator(String color, Display contained) {
+	public ColorDecorator(Color color, Display contained) {
 		super(contained);
 		this.color = color;
 	}
 
 	public String display() {
-		return this.contained.display() + "\nColor: " + this.color;
+		return this.color.colorCode() + this.contained.display();
 	}
 }

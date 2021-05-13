@@ -1,13 +1,8 @@
 import Client (Client(..), eat)
 import Data.List (intercalate)
-import Fork (Fork(..), SilverFork(..), SteelFork(..), WoodenFork(..))
+import Fork (SilverFork(..), SteelFork(..), WoodenFork(..))
 import Knife
-    ( Knife(..)
-    , KnifeForkAdapter(..)
-    , SilverKnife(..)
-    , SteelKnife(..)
-    , WoodenKnife(..)
-    )
+    (KnifeForkAdapter(..), SilverKnife(..), SteelKnife(..), WoodenKnife(..))
 
 main :: IO ()
 main = putStrLn eatenMeals

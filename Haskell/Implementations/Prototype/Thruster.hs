@@ -4,9 +4,9 @@ module Thruster
 
 import Display (Display(..))
 
-data Thruster = MkThruster
+newtype Thruster = MkThruster
     { thrust :: Int
     }
 
 instance Display Thruster where
-    display (MkThruster thrust) = "Thruster with " <> show thrust <> " thrust"
+    display (MkThruster t) = "Thruster with " <> show t <> " thrust"

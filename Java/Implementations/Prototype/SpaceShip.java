@@ -2,24 +2,29 @@ import java.util.*;
 
 public class SpaceShip {
 	private List<Part> parts = new ArrayList<>();
+	private String name;
+
+	public SpaceShip(String name) {
+		this.name = name;
+	}
 
 	public SpaceShip addPart(Part part) {
-		try {
-			this.parts.add(part.clone());
-		} catch (CloneNotSupportedException e) {
-			// Do something sensible here.
-		}
+		this.parts.add(part.clone());
 		return this;
 	}
 
 	public String display() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Space ship with the following parts:\n");
+		StringJoiner sj = new StringJoiner("\n");
+		sj.add(
+			"Space ship "
+			+ this.name
+			+ " with "
+			+ this.parts.size()
+			+ " parts:"
+		);
 		for (Part part : this.parts) {
-			sb.append("  ");
-			sb.append(part.display());
-			sb.append("\n");
+			sj.add("  " + part.display());
 		}
-		return sb.toString();
+		return sj.toString();
 	}
 }

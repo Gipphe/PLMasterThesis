@@ -10,13 +10,21 @@ public class BipedalMovement implements Movement {
 		double speed = this.movementSpeed.speed();
 		double time = distance / speed;
 
-		return this.movementSpeed.verb() + " from " + from + " to " + to
-			+ ",\na distance of " + Utils.roundTo(distance, 2)
-			+ ",\nat a speed of " + Utils.roundTo(speed, 2)
-			+ ",\nwhich will take " + Utils.roundTo(time, 2) + " seconds";
+		return this.movementSpeed.verb()
+			+ " from "
+			+ from
+			+ " to "
+			+ to
+			+ ",\na distance of "
+			+ Utils.roundTo(distance, 2)
+			+ ",\nat a speed of "
+			+ Utils.roundTo(speed, 2)
+			+ ",\nwhich will take "
+			+ Utils.roundTo(time, 2)
+			+ " seconds";
 	}
 
-	public enum MovementSpeed {
+	public static enum MovementSpeed {
 		WALK("walking", 1),
 		RUN("running", 3);
 

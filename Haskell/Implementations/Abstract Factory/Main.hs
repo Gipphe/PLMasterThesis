@@ -6,8 +6,7 @@ import Cutlery
     )
 import Fork (Fork(..))
 import Knife (Knife(..))
-import System.Environment (getArgs)
-import System.Exit (exitFailure, exitSuccess)
+import System.Exit (exitFailure)
 
 eatWith :: (Knife, Fork) -> String -> IO ()
 eatWith (knife, fork) food = do
@@ -32,5 +31,3 @@ main = do
         cutleryFactory <- pickFactory t
         let knifeAndFork = makeCutlery cutleryFactory
         eatWith knifeAndFork f
-    safeHead (x : _) = Just x
-    safeHead _       = Nothing

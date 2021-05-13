@@ -4,9 +4,9 @@ module Gun
 
 import Display (Display(..))
 
-data Gun = MkGun
+newtype Gun = MkGun
     { power :: Int
     }
 
 instance Display Gun where
-    display (MkGun power) = "Gun with " <> show power <> " power"
+    display (MkGun p) = "Gun: " <> show p <> " power"

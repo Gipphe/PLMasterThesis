@@ -1,8 +1,6 @@
 import java.util.*;
 
 public abstract class LeafComponent extends Component {
-	private List<Component> components = new ArrayList<>();
-
 	protected LeafComponent(String name) {
 		super(name);
 	}

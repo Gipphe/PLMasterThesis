@@ -2,9 +2,9 @@ $Implementations = @(
 	# 'Abstract Factory'
 	# 'Adapter'
 	# 'Command'
-	'Composite'
+	# 'Composite'
 	# 'Decorator'
 	# 'Iterator'
 	# 'Prototype'
-	# 'Strategy'
+	'Strategy'
 )

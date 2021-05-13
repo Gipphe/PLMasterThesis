@@ -1,15 +1,15 @@
-public class WindowPart extends Part {
-	private int tint;
+public class WindowPart implements Part {
+	private int hitpoints;
 
-	public WindowPart(int tint) {
-		this.tint = tint;
+	public WindowPart(int hp) {
+		this.hitpoints = hp;
 	}
 
 	public String display() {
-		return "Window with " + this.tint + " black tint to it";
+		return "Window: " + this.hitpoints + " hp";
 	}
 
-	public Part clone() throws CloneNotSupportedException {
-		return (WindowPart) super.clone();
+	public Part clone() {
+		return new WindowPart(this.hitpoints);
 	}
 }

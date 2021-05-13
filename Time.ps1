@@ -113,13 +113,11 @@ function Format-Result {
 
 	$SerialName = $Target.ToLower() -replace ' ', '-'
 
-	"\subsubsection{Execution time for $Target implementations}"
-	""
 	"\begin{table}"
 	"    \centering"
 	"    \begin{tabular}{|l|r|r|r|r|}"
 	"        \hline"
-	"        \multicolumn{5}{|c|}{\textbf{$Target}} \\"
+	"        \multicolumn{5}{|c|}{\textbf{Execution times for $Target}} \\"
 	"        \hline"
 	"        \textbf{Command} & \textbf{Mean [ms]} & \textbf{Min [ms]} & \textbf{Max [ms]} & \textbf{Relative} \\"
 	"        \hline"

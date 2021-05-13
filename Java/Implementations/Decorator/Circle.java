@@ -6,6 +6,6 @@ public class Circle implements Display {
 	}
 
 	public String display() {
-		return "Circle with radius " + this.radius;
+		return "Circle with radius " + this.radius + "\n" + "Drawing circles\nin a terminal\nis too hard.";
 	}
 }

@@ -1,22 +1,42 @@
 public class Main {
 	public static void main(String... args) {
-		SpaceShip ss = new SpaceShip();
+		ThrusterPart weakThruster = new ThrusterPart(30);
+		ThrusterPart strongThruster = new ThrusterPart(70);
+		StructurePart normalStructure = new StructurePart(100);
+		StructurePart strongStructure = new StructurePart(250);
+		WindowPart window = new WindowPart(25);
+		GunPart weakGun = new GunPart(10);
+		GunPart strongGun = new GunPart(40);
 
-		ThrusterPart tp = new ThrusterPart(30);
-		StructurePart sp = new StructurePart();
-		WindowPart wp = new WindowPart(50);
-		GunPart gp = new GunPart(10);
+		SpaceShip smallShip = new SpaceShip("Foo");
+		smallShip
+			.addPart(weakThruster)
+			.addPart(weakThruster)
+			.addPart(window)
+			.addPart(weakGun)
+			.addPart(weakGun);
+		addN(10, normalStructure, smallShip);
 
-		ss
-			.addPart(tp)
-			.addPart(tp)
-			.addPart(wp)
-			.addPart(gp);
+		SpaceShip largeShip = new SpaceShip("Bar");
+		largeShip
+			.addPart(strongThruster)
+			.addPart(strongThruster)
+			.addPart(weakThruster)
+			.addPart(weakThruster)
+			.addPart(strongGun)
+			.addPart(strongGun)
+			.addPart(weakGun);
+		addN(5, strongStructure, largeShip);
+		addN(5, window, largeShip);
+		addN(20, normalStructure, largeShip);
 
-		for (int i = 0; i < 10; i += 1) {
-			ss.addPart(sp);
+		System.out.println(smallShip.display() + "\n");
+		System.out.println(largeShip.display());
+	}
+
+	public static void addN(int n, Part p, SpaceShip s) {
+		for (int i = 0; i < n; i += 1) {
+			s.addPart(p);
 		}
-
-		System.out.println(ss.display());
 	}
 }

@@ -9,20 +9,16 @@ module User
 
 import Command (Command, dispatch)
 import Control.Monad.IO.Class (MonadIO(..))
-import Email (Email)
 import MailServer (SendEmail, SignEmail)
 import MonadEmailEditor (MonadEmailEditor)
 
-data User = MkUser
-    { name     :: String
-    , commands :: [Command]
-    }
+data User = MkUser String [Command]
 
 mkUser :: String -> User
 mkUser n = MkUser n []
 
 newCommand :: Command -> User -> User
-newCommand c user = user { commands = commands user <> [c] }
+newCommand c (MkUser name commands) = MkUser name (commands <> [c])
 
 runCommandsAsUser :: (SignEmail m, SendEmail m, MonadEmailEditor m, MonadIO m)
                   => User

@@ -10,7 +10,10 @@ public class Duck {
 	}
 
 	public String moveTo(Position dest) {
-		String res = this.name +  " " + this.movement.moveTo(this.position, dest) + ".";
+		String res = this.name
+			+  " "
+			+ this.movement.moveTo(this.position, dest)
+			+ ".";
 		this.position = dest;
 		return res;
 	}

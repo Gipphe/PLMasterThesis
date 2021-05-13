@@ -31,37 +31,9 @@ newtype ClockFrequency = MkClockFrequency String
 
 newtype Capacity = MkCapacity Int
 
-newtype Price = MkPrice Int
+type Price = Int
 
-instance Num Price where
-    MkPrice x + MkPrice y = MkPrice (x + y)
-    MkPrice x - MkPrice y = MkPrice (x - y)
-    MkPrice x * MkPrice y = MkPrice (x * y)
-    abs (MkPrice x) = MkPrice (abs x)
-    signum (MkPrice x) = MkPrice (signum x)
-    fromInteger x = MkPrice (fromInteger x)
-
-instance Semigroup Price where
-    (<>) = (+)
-
-instance Monoid Price where
-    mempty = MkPrice 0
-
-newtype Wattage = MkWattage Int
-
-instance Num Wattage where
-    MkWattage x + MkWattage y = MkWattage (x + y)
-    MkWattage x - MkWattage y = MkWattage (x - y)
-    MkWattage x * MkWattage y = MkWattage (x * y)
-    abs (MkWattage x) = MkWattage (abs x)
-    signum (MkWattage x) = MkWattage (signum x)
-    fromInteger x = MkWattage (fromInteger x)
-
-instance Semigroup Wattage where
-    MkWattage x <> MkWattage y = MkWattage (x + y)
-
-instance Monoid Wattage where
-    mempty = MkWattage 0
+type Wattage = Int
 
 data BasicInfo = MkBasicInfo
     { name  :: String
@@ -69,19 +41,19 @@ data BasicInfo = MkBasicInfo
     }
 
 mkCDROM :: String -> Int -> Component t
-mkCDROM n p = CDROM (MkBasicInfo n (MkPrice p))
+mkCDROM n p = CDROM (MkBasicInfo n p)
 
 mkChassis :: Monoid (t (Component t)) => String -> Int -> Component t
-mkChassis n p = Chassis (MkBasicInfo n (MkPrice p)) mempty
+mkChassis n p = Chassis (MkBasicInfo n p) mempty
 
 mkCPU :: String -> Int -> String -> Component t
-mkCPU n p hz = CPU (MkBasicInfo n (MkPrice p)) (MkClockFrequency hz)
+mkCPU n p hz = CPU (MkBasicInfo n p) (MkClockFrequency hz)
 
 mkMotherboard :: Monoid (t (Component t)) => String -> Int -> Component t
-mkMotherboard n p = Motherboard (MkBasicInfo n (MkPrice p)) mempty
+mkMotherboard n p = Motherboard (MkBasicInfo n p) mempty
 
 mkRAM :: String -> Int -> Int -> Component t
-mkRAM n p c = RAM (MkBasicInfo n (MkPrice p)) (MkCapacity c)
+mkRAM n p c = RAM (MkBasicInfo n p) (MkCapacity c)
 
 class Add t a where
     add :: a -> t a -> t a
@@ -104,14 +76,14 @@ componentPrice c = case c of
     RAM         x _     -> price x
     Chassis     x comps -> price x + sumComponentPrices comps
     Motherboard x comps -> price x + sumComponentPrices comps
-    where sumComponentPrices = foldMap componentPrice
+    where sumComponentPrices = getSum . foldMap (Sum . componentPrice)
 
 componentWattage :: Foldable t => Component t -> Wattage
 componentWattage c = case c of
     Chassis     _ comps -> sumComponentWattage comps
     Motherboard _ comps -> ownWattage c + sumComponentWattage comps
     _                   -> ownWattage c
-    where sumComponentWattage = foldMap componentWattage
+    where sumComponentWattage = getSum . foldMap (Sum . componentWattage)
 
 ownWattage :: Component t -> Wattage
 ownWattage c = case c of
@@ -171,36 +143,30 @@ displayName x = "Name: " <> name x
 displayPrice :: Foldable t => Component t -> [String]
 displayPrice c = case c of
     Chassis x _ ->
-        [ "Own price: " <> showPrice (price x)
-        , "Total price: " <> showPrice (componentPrice c)
+        [ "Own price: " <> show (price x)
+        , "Total price: " <> show (componentPrice c)
         ]
     Motherboard x _ ->
-        [ "Own price: " <> showPrice (price x)
-        , "Total price: " <> showPrice (componentPrice c)
+        [ "Own price: " <> show (price x)
+        , "Total price: " <> show (componentPrice c)
         ]
-    CDROM x -> ["Price: " <> showPrice (price x)]
-    CPU x _ -> ["Price: " <> showPrice (price x)]
-    RAM x _ -> ["Price: " <> showPrice (price x)]
+    CDROM x -> ["Price: " <> show (price x)]
+    CPU x _ -> ["Price: " <> show (price x)]
+    RAM x _ -> ["Price: " <> show (price x)]
 
 displayWattage :: Foldable t => Component t -> [String]
 displayWattage c = case c of
-    Chassis _ comps ->
+    Chassis _ _ ->
         (case ownWattage c of
-                MkWattage 0 -> []
-                w           -> ["Wattage: " <> showWattage w]
+                0 -> []
+                w -> ["Wattage: " <> show w]
             )
-            <> ["Total wattage: " <> showWattage (componentWattage c)]
-    Motherboard _ comps ->
-        [ "Wattage: " <> showWattage (ownWattage c)
-        , "Total wattage: " <> showWattage (componentWattage c)
+            <> ["Total wattage: " <> show (componentWattage c)]
+    Motherboard _ _ ->
+        [ "Wattage: " <> show (ownWattage c)
+        , "Total wattage: " <> show (componentWattage c)
         ]
-    _ -> ["Wattage: " <> showWattage (ownWattage c)]
-
-showPrice :: Price -> String
-showPrice (MkPrice x) = show x
-
-showWattage :: Wattage -> String
-showWattage (MkWattage x) = show x
+    _ -> ["Wattage: " <> show (ownWattage c)]
 
 indent :: String -> String
 indent = unlines . fmap ((<>) "  ") . filter (not . null) . lines
@@ -212,9 +178,6 @@ indentAfterFirst s = case lines s of
 
 componentStringJoin :: Foldable t => t String -> String
 componentStringJoin = mkStringJoin "{ " "\n, " "\n}"
-
--- collectionStringJoin :: Foldable t => t String -> String
--- collectionStringJoin = foldl (<>) ""
 
 collectionStringJoin :: Foldable t => t String -> String
 collectionStringJoin = mkStringJoin "[ " "\n, " "\n]"

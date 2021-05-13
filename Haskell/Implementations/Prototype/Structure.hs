@@ -4,9 +4,9 @@ module Structure
 
 import Display (Display(..))
 
-data Structure = MkStructure
-    { name :: String
+newtype Structure = MkStructure
+    { hitpoints :: Int
     }
 
 instance Display Structure where
-    display (MkStructure name) = "Structure " <> name
+    display (MkStructure hp) = "Structure: " <> show hp <> " hp"

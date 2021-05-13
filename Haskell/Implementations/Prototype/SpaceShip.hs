@@ -3,30 +3,33 @@
 module SpaceShip
     ( SpaceShip(..)
     , Part(..)
-    , emptySpaceShip
+    , mkSpaceShip
     , addPart
     ) where
 
 import Display (Display(..))
 
-data SpaceShip = MkSpaceShip
-    { parts :: [Part]
-    }
-
-
-data Part = forall a . Display a => Part a
+data Part = forall p . Display p => Part p
 
 instance Display Part where
-    display part = case part of
-        Part p -> display p
+    display (Part p) = display p
+
+data SpaceShip = MkSpaceShip
+    { parts :: [Part]
+    , name  :: String
+    }
 
 instance Display SpaceShip where
-    display (MkSpaceShip parts) = "Space ship with the following parts:\n"
-        <> mconcat ((\p -> "  " <> p <> "\n") . display <$> parts)
+    display (MkSpaceShip ps n) =
+        "Space ship "
+            <> n
+            <> " with "
+            <> show (length ps)
+            <> " parts:\n"
+            <> mconcat ((\p -> "  " <> p <> "\n") . display <$> ps)
 
+mkSpaceShip :: String -> SpaceShip
+mkSpaceShip = MkSpaceShip []
 
-emptySpaceShip :: SpaceShip
-emptySpaceShip = MkSpaceShip []
-
-addPart :: Part -> SpaceShip -> SpaceShip
-addPart p (MkSpaceShip parts) = MkSpaceShip (parts <> [p])
+addPart :: Display part => part -> SpaceShip -> SpaceShip
+addPart p ss = ss { parts = parts ss <> [Part p] }

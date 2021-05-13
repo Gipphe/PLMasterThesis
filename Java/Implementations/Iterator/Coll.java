@@ -1,4 +1,6 @@
-public abstract class Collection<T> {
+import java.util.*;
+
+public abstract class Coll<T> {
 	public abstract void add(T v);
 
 	public abstract Iterator<T> createIterator();
@@ -7,9 +9,8 @@ public abstract class Collection<T> {
 		if (itr == null) {
 			return;
 		}
-		while (!itr.isDone()) {
-			this.add(itr.currentItem());
-			itr.next();
+		while (itr.hasNext()) {
+			this.add(itr.next());
 		}
 	}
 }

@@ -4,10 +4,9 @@ module Window
 
 import Display (Display(..))
 
-data Window = MkWindow
-    { tint :: Int
+newtype Window = MkWindow
+    { hitpoints :: Int
     }
 
 instance Display Window where
-    display (MkWindow tint) =
-        "Window with " <> show tint <> " black tint to it"
+    display (MkWindow hp) = "Window: " <> show hp <> " hp"

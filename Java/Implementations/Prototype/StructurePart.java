@@ -1,19 +1,15 @@
-public class StructurePart extends Part {
-	private String name;
+public class StructurePart implements Part {
+	private int hitpoints;
 
-	public StructurePart() {
-		this.name = "";
-	}
-
-	public StructurePart(String name) {
-		this.name = name;
+	public StructurePart(int hp) {
+		this.hitpoints = hp;
 	}
 
 	public String display() {
-		return "Structure " + this.name;
+		return "Structure: " + this.hitpoints + " hp";
 	}
 
-	public Part clone() throws CloneNotSupportedException {
-		return (StructurePart) super.clone();
+	public Part clone() {
+		return new StructurePart(this.hitpoints);
 	}
 }

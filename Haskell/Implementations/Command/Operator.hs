@@ -3,13 +3,12 @@ module Operator
     , human2
     ) where
 
-import Command (Command(..), dispatch)
+import Command (Command(..))
 import ConsoleMailServerT (ConsoleMailServerT(..))
 import Email (Email(..), emptyEmail)
 import EmailEditorT (EmailEditorT(..))
-import MailServer (SendEmail, SignEmail)
 import StateT (StateT(..))
-import User (User, mkUser, newCommand, runCommandsAsUser)
+import User (mkUser, newCommand, runCommandsAsUser)
 
 sendEditedEmail :: String -> Command
 sendEditedEmail = SendEmail
@@ -67,7 +66,7 @@ human2 = do
     sendTheEmail             = sendEditedEmail recipient
     sendEmailAgainByAccident = sendEditedEmail recipient
     firstEmailUser =
-        newCommand sendTheEmail
+        newCommand sendEmailAgainByAccident
             . newCommand sendTheEmail
             . newCommand correctTheSubject
             . newCommand writeTheSubject

@@ -1,4 +1,6 @@
-public class LinkedList<T> extends Collection<T> {
+import java.util.*;
+
+public class LinkedList<T> extends Coll<T> {
 	private Node<T> head;
 
 	public void add(T v) {
@@ -8,10 +10,10 @@ public class LinkedList<T> extends Collection<T> {
 			return;
 		}
 		Node<T> curr = this.head;
-		while (curr.next() != null) {
-			curr = curr.next();
+		while (curr.next != null) {
+			curr = curr.next;
 		}
-		curr.next(node);
+		curr.next = node;
 	}
 
 	public Iterator<T> createIterator() {
@@ -25,18 +27,6 @@ public class LinkedList<T> extends Collection<T> {
 		private Node(T v) {
 			this.value = v;
 		}
-
-		private void next(Node<T> next) {
-			this.next = next;
-		}
-
-		private Node<T> next() {
-			return this.next;
-		}
-
-		private T value() {
-			return this.value;
-		}
 	}
 
 	public class LinkedListIterator implements Iterator<T> {
@@ -48,22 +38,16 @@ public class LinkedList<T> extends Collection<T> {
 			this.first = list.head;
 		}
 
-		public boolean isDone() {
-			return this.curr == null;
+		public boolean hasNext() {
+			return this.curr != null;
 		}
 
-		public T currentItem() {
-			return this.curr.value();
-		}
-
-		public void next() {
+		public T next() {
+			T curr = this.curr.value;
 			if (this.curr != null) {
 				this.curr = this.curr.next;
 			}
-		}
-
-		public void first() {
-			this.curr = this.first;
+			return curr;
 		}
 	}
 }

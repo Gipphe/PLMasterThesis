@@ -1,4 +1,6 @@
-public class BinaryTree<T> extends Collection<T> {
+import java.util.*;
+
+public class BinaryTree<T> extends Coll<T> {
 	private Node<T> root;
 	private Comparator<? super T> comp;
 
@@ -9,12 +11,12 @@ public class BinaryTree<T> extends Collection<T> {
 	public void add(T x) {
 		Node<T> current = this.root;
 		Node<T> result = null;
-		Ordering compval = Ordering.EQ;
+		int compval = 0;
 
 		while (current != null) {
 			result = current;
 			compval = this.comp.compare(x, current.value);
-			current = compval == Ordering.LT ? current.left : current.right;
+			current = compval < 0 ? current.left : current.right;
 		}
 
 		current = new Node<>(x);
@@ -22,31 +24,11 @@ public class BinaryTree<T> extends Collection<T> {
 
 		if (result == null) {
 			this.root = current;
-		} else if (compval == Ordering.LT) {
+		} else if (compval < 0) {
 			result.left = current;
 		} else {
 			result.right = current;
 		}
-	}
-
-	public boolean contains(T x) {
-		if (x == null) {
-			return false;
-		}
-		Node<T> current = this.root;
-		while (current != null) {
-			switch (this.comp.compare(current.value, x)) {
-				case EQ:
-					return true;
-				case LT:
-					current = current.left;
-					break;
-				case GT:
-					current = current.right;
-					break;
-			}
-		}
-		return false;
 	}
 
 	public Iterator<T> createIterator() {
@@ -74,20 +56,14 @@ public class BinaryTree<T> extends Collection<T> {
 			this.next = leftMost(root);
 		}
 
-		public T currentItem() {
-			return this.next.value;
-		}
-
-		public void first() {
-			this.next = leftMost(this.root);
-		}
-
-		public void next() {
+		public T next() {
+			T curr = this.next.value;
 			this.next = nextNode(this.next);
+			return curr;
 		}
 
-		public boolean isDone() {
-			return this.next == null;
+		public boolean hasNext() {
+			return this.next != null;
 		}
 
 		private static <T> Node<T> nextNode(Node<T> node) {
