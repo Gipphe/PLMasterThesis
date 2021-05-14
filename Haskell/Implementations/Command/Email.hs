@@ -1,8 +1,11 @@
 module Email
     ( Email(..)
-    , addSignature
     , emptyEmail
+    , signEmail
+    , sendEmail
     ) where
+
+import Data.List (intercalate)
 
 data Email = MkEmail
     { subject   :: String
@@ -13,5 +16,20 @@ data Email = MkEmail
 emptyEmail :: Email
 emptyEmail = MkEmail { subject = "", body = "", signature = Nothing }
 
-addSignature :: String -> Email -> Email
-addSignature s email = email { signature = Just s }
+sendEmail :: Email -> String -> IO ()
+sendEmail email recipient = do
+    putStrLn $ intercalate
+        "\n"
+        (  [ "+ New email"
+           , "| Recipient: " <> recipient
+           , "| Subject: " <> subject email
+           ]
+        <> (case signature email of
+               Nothing  -> []
+               Just sig -> ["| Signature: " <> sig]
+           )
+        <> ["| Body: " <> body email]
+        )
+
+signEmail :: Email -> Email
+signEmail email = email { signature = Just "Signed by ConsoleMailServer" }

@@ -1,5 +1,3 @@
-{-# LANGUAGE FlexibleContexts #-}
-
 module User
     ( User
     , mkUser
@@ -7,10 +5,8 @@ module User
     , runCommandsAsUser
     ) where
 
-import Command (Command, dispatch)
-import Control.Monad.IO.Class (MonadIO(..))
-import MailServer (SendEmail, SignEmail)
-import MonadEmailEditor (MonadEmailEditor)
+import Command (Command, dispatchList)
+import Email (emptyEmail)
 
 data User = MkUser String [Command]
 
@@ -20,10 +16,8 @@ mkUser n = MkUser n []
 newCommand :: Command -> User -> User
 newCommand c (MkUser name commands) = MkUser name (commands <> [c])
 
-runCommandsAsUser :: (SignEmail m, SendEmail m, MonadEmailEditor m, MonadIO m)
-                  => User
-                  -> m ()
+runCommandsAsUser :: User -> IO ()
 runCommandsAsUser (MkUser name commands) = do
-    liftIO (putStrLn ("Running commands as user " <> name))
-    _ <- traverse dispatch commands
+    putStrLn $ "Running commands as user " <> name
+    _ <- dispatchList emptyEmail commands
     pure ()

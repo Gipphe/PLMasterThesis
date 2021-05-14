@@ -111,7 +111,9 @@ function Format-Result {
 		[String]$Target
 	)
 
-	$SerialName = $Target.ToLower() -replace ' ', '-'
+	$SerialName = $Target.ToLower() -replace ' ', ''
+	$HaskellTime = $Result.results[1].mean * 1000
+	$JavaTime = $Result.results[0].mean * 1000
 
 	"\begin{table}"
 	"    \centering"
@@ -134,6 +136,9 @@ function Format-Result {
 	"    \end{tabular}"
 	"    \caption{\label{tbl:$SerialName-execution-times}Execution times for $Target implementations}"
 	"\end{table}"
+	""
+	"\def\haskell${SerialName}rawtime{$HaskellTime}"
+	"\def\java${SerialName}rawtime{$JavaTime}"
 }
 
 . .\Impls.ps1

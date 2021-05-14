@@ -3,8 +3,9 @@ module Operator
     , human2
     ) where
 
+import App (App(..))
 import Command (Command(..))
-import Email (Email(..))
+import Email (Email(..), emptyEmail)
 import User (mkUser, newCommand, runCommandsAsUser)
 
 sendEditedEmail :: String -> Command
@@ -14,14 +15,19 @@ signEmailWithServer :: Command
 signEmailWithServer = SignEmail
 
 writeSubject :: String -> Command
-writeSubject s = EditEmail (\email -> email { subject = s })
+writeSubject = UpdateText (\s email -> email { subject = s })
 
 writeBody :: String -> Command
-writeBody s = EditEmail (\email -> email { body = s })
+writeBody = UpdateText (\s email -> email { body = s })
+
+runCommands :: App a -> IO ()
+runCommands p = do
+    _ <- runApp p emptyEmail
+    pure ()
 
 human1 :: IO ()
 human1 = do
-    runCommandsAsUser user
+    _ <- runCommands (runCommandsAsUser user)
     pure ()
   where
     user =
@@ -39,9 +45,9 @@ human1 = do
 
 human2 :: IO ()
 human2 = do
-    runCommandsAsUser firstEmailUser
+    _ <- runCommands (runCommandsAsUser firstEmailUser)
     putStrLn "-----"
-    runCommandsAsUser secondEmailUser
+    _ <- runCommands (runCommandsAsUser secondEmailUser)
     pure ()
   where
     user                     = mkUser "Human 2"

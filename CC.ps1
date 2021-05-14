@@ -112,7 +112,9 @@ function Format-Result {
 		[String]$Target
 	)
 
-	$SerialName = $Target.ToLower() -replace ' ', '-'
+	$SerialName = $Target.ToLower() -replace ' ', ''
+	$HaskellTotal = $HaskellCC[$HaskellCC.Count - 1].CC
+	$JavaTotal = $JavaCC[$JavaCC.Count - 1].CC
 
 	"\begin{table}"
 	"    \centering"
@@ -131,6 +133,9 @@ function Format-Result {
 	"    \end{tabular}"
 	"    \caption{\label{tbl:$SerialName-cc}\Acl{CC} for $Target implementations}"
 	"\end{table}"
+	""
+	"\def\haskell${SerialName}cc{$HaskellTotal}"
+	"\def\java${SerialName}cc{$JavaTotal}"
 }
 
 . .\Impls.ps1

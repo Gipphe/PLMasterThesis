@@ -93,7 +93,9 @@ function Format-Result {
 		[PSCustomObject[]]$JavaPSLOC
 	)
 
-	$SerialName = $Target.ToLower() -replace ' ', '-'
+	$SerialName = $Target.ToLower() -replace ' ', ''
+	$HaskellTotal = $HaskellPSLOC[$HaskellPSLOC.Count - 1].PSLOC
+	$JavaTotal = $JavaPSLOC[$JavaPSLOC.Count - 1].PSLOC
 
 	"\begin{table}"
 	"    \centering"
@@ -112,6 +114,9 @@ function Format-Result {
 	"    \end{tabular}"
 	"    \caption{\label{tbl:$SerialName-psloc}\Acl{PSLOC} for $Target implementations}"
 	"\end{table}"
+	""
+	"\def\haskell${SerialName}psloc{$HaskellTotal}"
+	"\def\java${SerialName}psloc{$JavaTotal}"
 }
 
 . .\Impls.ps1
