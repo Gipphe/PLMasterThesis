@@ -19,7 +19,7 @@ main = do
     strongGun       = MkGun 40
 
     smallSpaceShip =
-        (\s -> foldr addPart s $ replicate 10 normalStructure)
+        addN 10 normalStructure
             . addPart weakGun
             . addPart weakGun
             . addPart window
@@ -28,9 +28,9 @@ main = do
             $ mkSpaceShip "Foo"
 
     largeSpaceShip =
-        (\s -> foldr addPart s $ replicate 20 normalStructure)
-            . (\s -> foldr addPart s $ replicate 5 window)
-            . (\s -> foldr addPart s $ replicate 5 strongStructure)
+        addN 20 normalStructure
+            . addN 5 window
+            . addN 5 strongStructure
             . addPart weakGun
             . addPart strongGun
             . addPart strongGun
@@ -39,3 +39,5 @@ main = do
             . addPart strongThruster
             . addPart strongThruster
             $ mkSpaceShip "Bar"
+
+    addN n p s = foldr addPart s (replicate n p)

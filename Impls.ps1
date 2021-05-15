@@ -1,10 +1,10 @@
 $Implementations = @(
-	# 'Abstract Factory'
-	# 'Adapter'
-	# 'Command'
-	# 'Composite'
-	# 'Decorator'
-	# 'Iterator'
-	# 'Prototype'
+	'Abstract Factory'
+	'Adapter'
+	'Command'
+	'Composite'
+	'Decorator'
+	'Iterator'
+	'Prototype'
 	'Strategy'
 )
