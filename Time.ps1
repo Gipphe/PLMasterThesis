@@ -171,7 +171,7 @@ $Implementations
 	Build-Java $_ | Write-Host
 	Write-Host "Benchmarking $_ ..."
 	Invoke-Hyperfine `
-		-Names "Java: $_", "Haskell: $_" `
+		-Names "Java", "Haskell" `
 		-Output $File `
 		-Commands $(Get-Java-Command $_), $(Get-Haskell-Command $_)
 	| Write-Host

@@ -1,2 +1,2 @@
-instance emigroup Sum where
+instance Semigroup Sum where
     Sum x <> Sum y = Sum (x + y)
